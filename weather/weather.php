@@ -4,14 +4,14 @@ $w_decode;
 
 if(isset($_GET['SUBMIT'])){
     $city = $_GET['city'];
-    $weather_city = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1');
+    $weather_city = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1&units=metric');
     $w_decode = json_decode($weather_city);
-    print_r($w_decode);
 }
 
-function convert_to_celsius($fahrenheit){
-    return round(($fahrenheit - 32) / 1.8, 1);
-}
+// function convert_to_celsius($fahrenheit){
+//     echo $fahrenheit;
+//     return round(($fahrenheit - 32) / 1.8, 1);
+// }
 ?>
 
 <!DOCTYPE html>
@@ -31,10 +31,11 @@ function convert_to_celsius($fahrenheit){
     <h2>
         <?php 
         if(isset($_GET['SUBMIT'])){
-            echo "The temperature is ".convert_to_celsius($w_decode->main->temp)."C<br>";
+            echo "In country {$w_decode->sys->country}: <br>";
+            echo "The temperature is ".($w_decode->main->temp)."C<br>";
             echo "The weather status is {$w_decode->weather[0]->main}<br>";
             echo "The pressure is {$w_decode->main->pressure} PA<br>";
-            echo "The wind speed is {$w_decode->wind->speed}miles per hour<br>";
+            echo "The wind speed is {$w_decode->wind->speed} miles per hour<br>";
         }
         ?>
     </h2>
