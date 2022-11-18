@@ -1,11 +1,18 @@
 <?php
 $city = "Kiev";
 $w_decode;
+$is_correct = false;
 
 if(isset($_GET['SUBMIT'])){
-    $city = $_GET['city'];
-    $weather_city = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1&units=metric');
-    $w_decode = json_decode($weather_city);
+    try {
+        $city = $_GET['city'];
+        $weather_city = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1&units=metric');
+        $w_decode = json_decode($weather_city);
+        $is_correct = true;
+    } catch (Exception $e) {
+        $is_correct = false;
+    }
+   
 }
 
 // function convert_to_celsius($fahrenheit){
@@ -28,16 +35,24 @@ if(isset($_GET['SUBMIT'])){
         Введіть інтересуюче місто: <input type="text" name="city"/><br/>
         <input type="submit" name="SUBMIT" value="Підтвердити"/>
      </form>
-    <h2>
+    <h3>
         <?php 
-        if(isset($_GET['SUBMIT'])){
-            echo "In country {$w_decode->sys->country}: <br>";
-            echo "The temperature is ".($w_decode->main->temp)."C<br>";
-            echo "The weather status is {$w_decode->weather[0]->main}<br>";
-            echo "The pressure is {$w_decode->main->pressure} PA<br>";
-            echo "The wind speed is {$w_decode->wind->speed} miles per hour<br>";
-        }
+            if($w_decode){
+                if ($is_correct){
+                    echo "In country {$w_decode->sys->country}: <br>";
+                    echo "The temperature is ".($w_decode->main->temp)."C<br>";
+                    echo "The weather status is {$w_decode->weather[0]->main}<br>";
+                    echo "The pressure is {$w_decode->main->pressure} PA<br>";
+                    echo "The wind speed is {$w_decode->wind->speed} miles per hour<br>";
+                }
+                else{
+                    echo "Sorry we can't find the weather in {$_GET['city']}";
+                }
+            }
+            else{
+                echo "Sorry we can't find the weather in {$_GET['city']}";
+            }
         ?>
-    </h2>
+    </h3>
 </body>
 </html>
