@@ -1,18 +1,15 @@
 <?php
 $city = "Kiev";
-$w_decode;
-$is_correct = false;
+$w_decode = null;
 
 if(isset($_GET['SUBMIT'])){
     try {
         $city = $_GET['city'];
-        $weather_city = file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1&units=metric');
+        $weather_city = @file_get_contents('https://api.openweathermap.org/data/2.5/weather?q='.$city.'&APPID=fada024d74ea8c82c596e30e55e3f9d1&units=metric');
         $w_decode = json_decode($weather_city);
-        $is_correct = true;
     } catch (Exception $e) {
-        $is_correct = false;
+        echo "Error!";
     }
-   
 }
 
 // function convert_to_celsius($fahrenheit){
@@ -37,8 +34,8 @@ if(isset($_GET['SUBMIT'])){
      </form>
     <h3>
         <?php 
-            if($w_decode){
-                if ($is_correct){
+            if(isset($_GET['SUBMIT'])){
+                if($w_decode){
                     echo "In country {$w_decode->sys->country}: <br>";
                     echo "The temperature is ".($w_decode->main->temp)."C<br>";
                     echo "The weather status is {$w_decode->weather[0]->main}<br>";
@@ -46,11 +43,8 @@ if(isset($_GET['SUBMIT'])){
                     echo "The wind speed is {$w_decode->wind->speed} miles per hour<br>";
                 }
                 else{
-                    echo "Sorry we can't find the weather in {$_GET['city']}";
+                    echo "Sorry we can't find the weather in the city {$_GET['city']}";
                 }
-            }
-            else{
-                echo "Sorry we can't find the weather in {$_GET['city']}";
             }
         ?>
     </h3>
